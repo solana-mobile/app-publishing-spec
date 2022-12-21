@@ -22,7 +22,7 @@
   },
   "scripts": {
     "clean": "shx mkdir -p lib && shx rm -rf lib",
-    "prebuild": "pnpm run clean",
+    "prebuild": "pnpm run clean && pnpm run generate-types",
     "generate-types": "json2ts -i src/validate/schemas -o src/validate/generated"
   },
   "devDependencies": {
