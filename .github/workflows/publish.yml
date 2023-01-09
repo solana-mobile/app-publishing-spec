@@ -1,0 +1,36 @@
+name: Publish to NPM
+on:
+  release:
+    types: [created]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        id: install-pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+          run_install: false
+
+      - name: Setup Node
+        id: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install dependencies and build 🔧
+        id: install-deps
+        run: pnpm run build
+
+      - name: Publish package on NPM 📦
+        id: pnpm-publish
+        if: ${{ github.event_name == 'release' && startsWith(github.event.release.tag_name, 'v') }}
+        run: pnpm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
